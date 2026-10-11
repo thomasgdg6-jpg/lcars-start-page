@@ -1,0 +1,361 @@
+/* LCARS start page — George's Station. Pure CSS, no frameworks. */
+
+:root {
+  --bg: #000000;
+  --orange: #ff9900;
+  --peach: #ffcc99;
+  --purple: #cc99cc;
+  --peri: #9999ff;
+  --blue: #9999cc;
+  --tan: #ffcc66;
+  --red: #cc4444;
+  --ink: #000000;
+  --dim: #8a7a6a;
+}
+
+body.red-alert {
+  --orange: #ff3333;
+  --peach: #ff8888;
+  --purple: #ff5555;
+  --peri: #ff7777;
+  --blue: #ff9999;
+  --tan: #ffaa55;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--peach);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  transition: background 0.4s;
+}
+
+.station {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 12px 14px 28px;
+}
+
+/* ---------- Header sweep ---------- */
+.lcars-header {
+  display: flex;
+  align-items: stretch;
+  min-height: 84px;
+}
+
+.hdr-cap {
+  background: var(--peach);
+  color: var(--ink);
+  border-radius: 42px 0 0 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  font-size: 1.05rem;
+}
+
+.hdr-title {
+  background: #000;
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  font-size: clamp(1.15rem, 4.6vw, 2.3rem);
+  white-space: nowrap;
+}
+
+.hdr-segs { display: flex; flex: 1; min-width: 60px; }
+.hdr-segs div { flex: 1; }
+.hdr-segs .s1 { background: var(--orange); }
+.hdr-segs .s2 { background: var(--purple); }
+.hdr-segs .s3 { background: var(--peri); border-radius: 0 42px 42px 0; }
+
+.hdr-sub {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 18px;
+  flex-wrap: wrap;
+}
+
+.hs-pill {
+  background: var(--blue);
+  color: var(--ink);
+  border-radius: 20px;
+  padding: 6px 18px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+}
+
+.hs-text {
+  color: var(--purple);
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.hs-dot { color: var(--orange); font-size: 1rem; }
+
+.blink { animation: blink 1.4s steps(2, start) infinite; }
+@keyframes blink { to { visibility: hidden; } }
+
+/* ---------- Panels ---------- */
+.panel { margin-bottom: 22px; }
+
+.panel-head {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 10px;
+  min-height: 44px;
+}
+
+.ph-pill {
+  background: var(--orange);
+  color: var(--ink);
+  border-radius: 22px 0 0 22px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.ph-bar { display: flex; flex: 1; min-width: 40px; }
+.ph-bar div { flex: 1; }
+.ph-bar .b1 { background: var(--tan); }
+.ph-bar .b2 { background: var(--purple); }
+.ph-bar .b3 { background: var(--peri); border-radius: 0 22px 22px 0; }
+
+.panel-body {
+  border-left: 6px solid var(--orange);
+  border-radius: 0 18px 18px 0;
+  padding: 16px 18px;
+  background: #0a0a0a;
+}
+
+/* ---------- Chronometer ---------- */
+.chrono { text-align: left; }
+
+.clock {
+  font-size: clamp(2.2rem, 9vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--peach);
+  font-variant-numeric: tabular-nums;
+}
+
+.date-line {
+  color: var(--purple);
+  letter-spacing: 0.16em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin: 4px 0 12px;
+}
+
+.stardate-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.sd-label {
+  background: var(--peri);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 4px 14px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+}
+
+.stardate {
+  color: var(--tan);
+  font-size: clamp(1.2rem, 5vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Link grid ---------- */
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.lcars-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 28px;
+  padding: 18px 22px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  font-size: 0.95rem;
+  color: var(--ink);
+  font-family: inherit;
+  text-align: left;
+  transition: filter 0.15s, transform 0.15s;
+}
+
+.lcars-btn:hover { filter: brightness(1.18); }
+.lcars-btn:active { transform: scale(0.98); }
+
+.btn-sub {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  opacity: 0.75;
+}
+
+.c-orange { background: var(--orange); }
+.c-purple { background: var(--purple); }
+.c-peri { background: var(--peri); }
+.c-tan { background: var(--tan); }
+.c-red { background: var(--red); color: #fff; }
+
+/* ---------- Ship's status ---------- */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid #222;
+  flex-wrap: wrap;
+}
+
+.stat-label {
+  color: var(--peri);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+}
+
+.stat-val {
+  color: var(--peach);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-val.ok { color: var(--tan); }
+
+.tip-box {
+  margin: 14px 0;
+  background: #111;
+  border-radius: 14px;
+  padding: 12px 16px;
+  border: 1px solid #2a2a2a;
+}
+
+.tip-label {
+  background: var(--purple);
+  color: var(--ink);
+  border-radius: 12px;
+  padding: 3px 12px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.tip-text {
+  color: var(--peach);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  margin: 10px 0 2px;
+  min-height: 2.6em;
+}
+
+.alert-btn { width: 100%; align-items: center; text-align: center; }
+
+body.red-alert .alert-btn { animation: alertpulse 1s ease-in-out infinite; }
+@keyframes alertpulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.6); }
+}
+
+/* ---------- Captain's log ---------- */
+#captainsLog {
+  width: 100%;
+  background: #000;
+  color: var(--peach);
+  border: 2px solid var(--orange);
+  border-radius: 14px;
+  padding: 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+#captainsLog:focus { outline: none; border-color: var(--tan); }
+
+.log-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.log-status {
+  color: var(--blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.mini-btn {
+  background: var(--blue);
+  color: var(--ink);
+  border: none;
+  border-radius: 18px;
+  padding: 8px 20px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.mini-btn:hover { filter: brightness(1.18); }
+
+/* ---------- Footer ---------- */
+.foot {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--dim);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  padding-top: 8px;
+  border-top: 3px solid var(--orange);
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 520px) {
+  .station { padding: 8px 10px 22px; }
+  .hdr-cap { padding: 0 14px; font-size: 0.85rem; }
+  .hdr-title { padding: 0 12px; }
+  .panel-body { padding: 12px 14px; }
+  .link-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>George's Station &mdash; LCARS</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="station">
+
+  <header class="lcars-header">
+    <div class="hdr-cap">LCARS</div>
+    <div class="hdr-title">GEORGE&rsquo;S STATION</div>
+    <div class="hdr-segs"><div class="s1"></div><div class="s2"></div><div class="s3"></div></div>
+  </header>
+  <div class="hdr-sub">
+    <span class="hs-pill">U.S.S. TWICE AS NICE</span>
+    <span class="hs-text">LIBRARY COMPUTER ACCESS // RETRIEVAL SYSTEM</span>
+    <span class="blink hs-dot" aria-hidden="true">&#9679;</span>
+  </div>
+
+  <main>
+
+    <section class="panel">
+      <div class="panel-head">
+        <span class="ph-pill">CHRONOMETER</span>
+        <div class="ph-bar"><div class="b1"></div><div class="b2"></div><div class="b3"></div></div>
+      </div>
+      <div class="panel-body chrono">
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="date-line" id="dateLine">AWAITING TEMPORAL SYNC</div>
+        <div class="stardate-row">
+          <span class="sd-label">STARDATE</span>
+          <span class="stardate" id="stardate">[--] ---.--</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <span class="ph-pill">NAVIGATION</span>
+        <div class="ph-bar"><div class="b1"></div><div class="b2"></div><div class="b3"></div></div>
+      </div>
+      <div class="panel-body">
+        <nav class="link-grid">
+          <a class="lcars-btn c-orange" href="#" target="_blank" rel="noopener">GIFT CARD APP<span class="btn-sub">LINK PENDING</span></a>
+          <a class="lcars-btn c-purple" href="https://supabase.com/dashboard/project/pxnskbpjwxshnlbufmgi" target="_blank" rel="noopener">SUPABASE<span class="btn-sub">DATABASE CONSOLE</span></a>
+          <a class="lcars-btn c-peri" href="https://mail.google.com/" target="_blank" rel="noopener">GMAIL<span class="btn-sub">SUBSPACE MAIL</span></a>
+          <a class="lcars-btn c-tan" href="https://dash.cloudflare.com/" target="_blank" rel="noopener">CLOUDFLARE<span class="btn-sub">STATION HOSTING</span></a>
+        </nav>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <span class="ph-pill">SHIP&rsquo;S STATUS</span>
+        <div class="ph-bar"><div class="b1"></div><div class="b2"></div><div class="b3"></div></div>
+      </div>
+      <div class="panel-body">
+        <div class="stat-row"><span class="stat-label">WARP CORE OUTPUT</span><span class="stat-val" id="warpLevel">--</span></div>
+        <div class="stat-row"><span class="stat-label">SHIELD INTEGRITY</span><span class="stat-val" id="shieldLevel">--</span></div>
+        <div class="stat-row"><span class="stat-label">HULL INTEGRITY</span><span class="stat-val" id="hullLevel">--</span></div>
+        <div class="stat-row"><span class="stat-label">COFFEE RESERVES</span><span class="stat-val ok">NOMINAL</span></div>
+        <div class="stat-row"><span class="stat-label">TRIBBLE COUNT</span><span class="stat-val ok">0 &mdash; POLICY ENFORCED</span></div>
+        <div class="stat-row"><span class="stat-label">BOUTIQUE INVENTORY</span><span class="stat-val ok">FULLY STOCKED</span></div>
+        <div class="tip-box">
+          <span class="tip-label">FLEET ADVISORY</span>
+          <p class="tip-text" id="tipText">STANDING BY FOR ADVISORY UPLINK&hellip;</p>
+        </div>
+        <button class="lcars-btn c-red alert-btn" id="alertBtn" type="button">RED ALERT</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <span class="ph-pill">CAPTAIN&rsquo;S LOG</span>
+        <div class="ph-bar"><div class="b1"></div><div class="b2"></div><div class="b3"></div></div>
+      </div>
+      <div class="panel-body">
+        <textarea id="captainsLog" rows="6" placeholder="Stardate&hellip; personal log&hellip;"></textarea>
+        <div class="log-foot">
+          <span class="log-status" id="logStatus">LOG READY</span>
+          <button class="mini-btn" id="clearLog" type="button">CLEAR LOG</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <span>LCARS INTERFACE 4.1</span>
+    <span>&copy; <span id="year">2026</span> GEORGE&rsquo;S STATION</span>
+  </footer>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
