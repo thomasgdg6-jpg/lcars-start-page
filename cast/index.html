@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Cast — Your Characters</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ROSTER -->
+  <section id="screen-roster" class="screen active">
+    <header class="topbar">
+      <h1>Cast</h1>
+      <div class="topbar-actions">
+        <button id="btn-settings" class="icon-btn" title="Settings">⚙</button>
+        <button id="btn-new-char" class="icon-btn" title="New character">＋</button>
+      </div>
+    </header>
+    <div id="key-warning" class="warning hidden">
+      No API key set. <button id="btn-key-warning" class="link-btn">Add one in Settings</button> to start chatting.
+    </div>
+    <div id="roster" class="roster"></div>
+  </section>
+
+  <!-- CHAT -->
+  <section id="screen-chat" class="screen">
+    <header class="topbar chat-topbar">
+      <button id="btn-back" class="icon-btn">‹</button>
+      <div class="chat-title">
+        <span id="chat-avatar" class="avatar"></span>
+        <div>
+          <div id="chat-name" class="chat-name"></div>
+          <div id="chat-status" class="chat-status">online</div>
+        </div>
+      </div>
+      <button id="btn-clear-chat" class="icon-btn" title="Clear conversation">🗑</button>
+    </header>
+    <div id="messages" class="messages"></div>
+    <div id="typing" class="typing hidden"><span></span><span></span><span></span></div>
+    <footer class="composer">
+      <input id="input" type="text" placeholder="Say something…" autocomplete="off" maxlength="2000">
+      <button id="btn-send" class="send-btn">➤</button>
+    </footer>
+  </section>
+
+  <!-- CHARACTER EDITOR -->
+  <section id="screen-editor" class="screen">
+    <header class="topbar">
+      <button id="btn-editor-back" class="icon-btn">‹</button>
+      <h1 id="editor-title">New Character</h1>
+      <button id="btn-editor-save" class="text-btn">Save</button>
+    </header>
+    <div class="form">
+      <label>Name<input id="f-name" type="text" maxlength="40" placeholder="e.g. Vesper"></label>
+      <label>Tagline<input id="f-tagline" type="text" maxlength="80" placeholder="e.g. Lounge singer with a past"></label>
+      <label>Avatar (emoji)<input id="f-avatar" type="text" maxlength="4" placeholder="🎤"></label>
+      <label>Personality &amp; backstory
+        <textarea id="f-persona" rows="6" placeholder="Who are they? How do they talk? What do they want?"></textarea>
+      </label>
+      <label>First message
+        <textarea id="f-greeting" rows="3" placeholder="What they say when the chat opens"></textarea>
+      </label>
+      <button id="btn-delete-char" class="danger-btn hidden">Delete character</button>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="screen-settings" class="screen">
+    <header class="topbar">
+      <button id="btn-settings-back" class="icon-btn">‹</button>
+      <h1>Settings</h1>
+    </header>
+    <div class="form">
+      <label>Provider
+        <select id="s-provider">
+          <option value="gemini">Google AI Studio (Gemini) — free</option>
+          <option value="openai">OpenAI-compatible (Groq, OpenRouter…)</option>
+        </select>
+      </label>
+      <label>API key
+        <input id="s-key" type="password" placeholder="Paste your key — stored only on this device" autocomplete="off">
+      </label>
+      <p class="hint">Get a free key at <b>aistudio.google.com</b> (no credit card). It never leaves your device.</p>
+      <div id="openai-extra" class="hidden">
+        <label>Base URL<input id="s-base" type="text" placeholder="https://api.groq.com/openai/v1"></label>
+      </div>
+      <label>Model<input id="s-model" type="text" placeholder="gemini-2.5-flash"></label>
+      <p class="hint">Model names change over time — check your provider's docs if one stops working.</p>
+      <button id="btn-test-key" class="text-btn">Test key</button>
+      <div id="test-result" class="hint"></div>
+    </div>
+  </section>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
