@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Selah — A Bible Companion</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ASK -->
+  <section id="screen-ask" class="screen active">
+    <header class="topbar"><h1>Selah</h1>
+      <div class="topbar-actions">
+        <button id="btn-settings" class="icon-btn" title="Settings">⚙</button>
+        <button id="btn-clear" class="icon-btn" title="Clear conversation">🗑</button>
+      </div>
+    </header>
+    <div id="key-warning" class="warning hidden">
+      No API key yet. <button id="btn-key-warning" class="link-btn">Add your free key in Settings</button> — it carries over from Cast if you set it there.
+    </div>
+    <div id="messages" class="messages"></div>
+    <div id="typing" class="typing hidden"><span></span><span></span><span></span></div>
+    <footer class="composer">
+      <input id="input" type="text" placeholder="Ask about Scripture…" autocomplete="off" maxlength="2000">
+      <button id="btn-send" class="send-btn">➤</button>
+    </footer>
+  </section>
+
+  <!-- VERSE -->
+  <section id="screen-verse" class="screen">
+    <header class="topbar"><h1>Verse</h1></header>
+    <div class="verse-wrap">
+      <div class="votd-label">Verse of the day</div>
+      <div id="votd-ref" class="votd-ref"></div>
+      <div id="votd-text" class="votd-text"></div>
+      <div class="lookup">
+        <input id="lookup-input" type="text" placeholder="e.g. Romans 12:2" autocomplete="off">
+        <button id="btn-lookup" class="text-btn">Look up</button>
+      </div>
+      <div id="lookup-result" class="lookup-result"></div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="screen-settings" class="screen">
+    <header class="topbar">
+      <button id="btn-settings-back" class="icon-btn">‹</button>
+      <h1>Settings</h1>
+    </header>
+    <div class="form">
+      <label>API key (Google AI Studio — free)
+        <input id="s-key" type="password" placeholder="Pastes once, stays on this device" autocomplete="off">
+      </label>
+      <p class="hint">Free key at <b>aistudio.google.com/apikey</b>. Same key as Cast works here.</p>
+      <label>Model<input id="s-model" type="text" placeholder="gemini-3.8-flash"></label>
+      <button id="btn-test-key" class="text-btn">Test key</button>
+      <div id="test-result" class="hint"></div>
+      <p class="hint fine">Selah is a study companion, not a pastor. Answers are generated and may err — always check your own Bible.</p>
+    </div>
+  </section>
+
+  <nav class="tabbar">
+    <button id="tab-ask" class="tab active">✦ Ask</button>
+    <button id="tab-verse" class="tab">📖 Verse</button>
+  </nav>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
