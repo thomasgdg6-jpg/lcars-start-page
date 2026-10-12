@@ -17,8 +17,9 @@ function load(k,d){ try{var v=localStorage.getItem(k); return v?JSON.parse(v):d;
 function save(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 
-var settings=load(LS_SET,{provider:"gemini",key:"",base:"",model:"gemini-3.8-flash"});
-if(!settings.model) settings.model="gemini-3.8-flash";
+var settings=load(LS_SET,{provider:"groq",key:"",base:"",model:"llama-3.3-70b-versatile"});
+if(!settings.provider) settings.provider="groq";
+if(!settings.model) settings.model = settings.provider==="gemini" ? "gemini-3.8-flash" : "llama-3.3-70b-versatile";
 var history=load(LS_CHAT,[]);
 
 var $=function(id){return document.getElementById(id);};
@@ -57,6 +58,24 @@ function addMsg(role,text){
   save(LS_CHAT,history); renderMessages();
 }
 
+function askGroq(system,history,userText){
+  var model=(settings.model||"llama-3.3-70b-versatile").trim();
+  var msgs=[{role:"system",content:system}];
+  history.forEach(function(t){msgs.push({role:t.role==="me"?"user":"assistant",content:t.text});});
+  msgs.push({role:"user",content:userText});
+  return fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+settings.key},
+    body:JSON.stringify({model:model,messages:msgs,max_tokens:800,temperature:0.7})})
+  .then(function(r){return r.json().then(function(d){return{ok:r.ok,status:r.status,body:d};});})
+  .then(function(res){
+    if(!res.ok) throw new Error("Groq: "+(res.body.error&&res.body.error.message||("HTTP "+res.status)));
+    var m=res.body.choices&&res.body.choices[0]&&res.body.choices[0].message;
+    var text=String((m&&m.content)||"").trim();
+    if(!text) throw new Error("Groq returned an empty reply.");
+    return text;
+  });
+}
+
 function askGemini(userText){
   var model=(settings.model||"gemini-3.8-flash").trim();
   var url="https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent?key="+encodeURIComponent(settings.key);
@@ -89,7 +108,8 @@ function send(){
   /* temporarily swap history for the API call shape */
   var savedHistory=history;
   history=hist;
-  askGemini(text).then(function(reply){
+  var p = settings.provider==="gemini" ? askGemini(text) : askGroq(SYSTEM,hist,text);
+  p.then(function(reply){
     history=savedHistory;
     $("typing").classList.add("hidden"); sending=false; addMsg("them",reply);
   }).catch(function(err){
@@ -132,23 +152,36 @@ function doLookup(){
 }
 
 /* settings */
-function loadSettings(){ $("s-key").value=settings.key||""; $("s-model").value=settings.model||"gemini-3.8-flash"; }
+function defaultModelFor(p){ return p==="gemini" ? "gemini-3.8-flash" : "llama-3.3-70b-versatile"; }
+function loadSettings(){
+  $("s-provider").value=settings.provider||"groq";
+  $("s-key").value=settings.key||"";
+  $("s-model").value=settings.model||defaultModelFor(settings.provider);
+}
 function saveSettings(){
+  settings.provider=$("s-provider").value;
   settings.key=$("s-key").value.trim();
-  settings.model=$("s-model").value.trim()||"gemini-3.8-flash";
+  settings.model=$("s-model").value.trim()||defaultModelFor(settings.provider);
   save(LS_SET,settings); refreshKeyWarning();
 }
 function testKey(){
   saveSettings();
   var out=$("test-result"); out.textContent="Testing…"; out.style.color="";
   if(!settings.key){ out.textContent="Enter a key first."; return; }
-  var model=(settings.model||"gemini-3.8-flash").trim();
-  fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent?key="+encodeURIComponent(settings.key),
-    {method:"POST",headers:{"Content-Type":"application/json"},
-     body:JSON.stringify({contents:[{parts:[{text:"Reply with the word OK."}]}],generationConfig:{maxOutputTokens:10}})})
-    .then(function(r){return r.json().then(function(d){return{ok:r.ok,body:d};});})
+  var model=(settings.model||defaultModelFor(settings.provider)).trim();
+  var req;
+  if(settings.provider==="gemini"){
+    req=fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent?key="+encodeURIComponent(settings.key),
+      {method:"POST",headers:{"Content-Type":"application/json"},
+       body:JSON.stringify({contents:[{parts:[{text:"Reply with the word OK."}]}],generationConfig:{maxOutputTokens:10}})});
+  }else{
+    req=fetch("https://api.groq.com/openai/v1/chat/completions",
+      {method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+settings.key},
+       body:JSON.stringify({model:model,messages:[{role:"user",content:"Reply with the word OK."}],max_tokens:10})});
+  }
+  req.then(function(r){return r.json().then(function(d){return{ok:r.ok,body:d};});})
     .then(function(res){
-      if(!res.ok) throw new Error(res.body.error&&res.body.error.message||"failed");
+      if(!res.ok) throw new Error((res.body.error&&res.body.error.message)||"failed");
       out.textContent="✓ Key works."; out.style.color="#7ddf9a";
     })
     .catch(function(e){ out.textContent="✗ "+e.message; out.style.color="#f08a8a"; });
