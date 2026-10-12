@@ -27,7 +27,7 @@ function uid(){ return "c"+Date.now().toString(36)+Math.floor(Math.random()*1e4)
 var chars=load(LS_CHARS,null);
 if(!chars){ chars=SEED.slice(); save(LS_CHARS,chars); }
 var chats=load(LS_CHATS,{});
-var settings=load(LS_SET,{provider:"gemini",key:"",base:"https://api.groq.com/openai/v1",model:"gemini-2.5-flash"});
+var settings=load(LS_SET,{provider:"gemini",key:"",base:"https://api.groq.com/openai/v1",model:"gemini-3.8-flash"});
 
 var $=function(id){return document.getElementById(id);};
 var currentChar=null, sending=false;
@@ -91,7 +91,7 @@ function historyFor(c){
 }
 
 function callGemini(system,history,userText){
-  var model=(settings.model||"gemini-2.5-flash").trim();
+  var model=(settings.model||"gemini-3.8-flash").trim();
   var url="https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent?key="+encodeURIComponent(settings.key);
   var contents=history.map(function(t){
     return {role:t.role==="me"?"user":"model", parts:[{text:t.text}]};
@@ -192,7 +192,7 @@ function saveSettings(){
   settings.provider=$("s-provider").value;
   settings.key=$("s-key").value.trim();
   settings.base=$("s-base").value.trim();
-  settings.model=$("s-model").value.trim()||(settings.provider==="gemini"?"gemini-2.5-flash":"llama-3.3-70b-versatile");
+  settings.model=$("s-model").value.trim()||(settings.provider==="gemini"?"gemini-3.8-flash":"llama-3.3-70b-versatile");
   save(LS_SET,settings); refreshKeyWarning();
   $("openai-extra").classList.toggle("hidden",settings.provider!=="openai");
 }
@@ -202,7 +202,7 @@ function testKey(){
   if(!settings.key){ out.textContent="Enter a key first."; return; }
   var p;
   if(settings.provider==="gemini"){
-    var model=(settings.model||"gemini-2.5-flash").trim();
+    var model=(settings.model||"gemini-3.8-flash").trim();
     p=fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent?key="+encodeURIComponent(settings.key),
       {method:"POST",headers:{"Content-Type":"application/json"},
        body:JSON.stringify({contents:[{parts:[{text:"Reply with the word OK."}]}],generationConfig:{maxOutputTokens:10}})})
@@ -231,7 +231,7 @@ $("btn-settings-back").addEventListener("click",function(){saveSettings();show("
 $("btn-key-warning").addEventListener("click",function(){loadSettings();show("screen-settings");});
 $("s-provider").addEventListener("change",function(){
   settings.provider=$("s-provider").value;
-  if(settings.provider==="gemini"&&!$("s-model").value) $("s-model").value="gemini-2.5-flash";
+  if(settings.provider==="gemini"&&!$("s-model").value) $("s-model").value="gemini-3.8-flash";
   if(settings.provider==="openai"&&!$("s-base").value) $("s-base").value="https://api.groq.com/openai/v1";
   saveSettings();
 });
