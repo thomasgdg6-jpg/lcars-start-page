@@ -53,11 +53,19 @@
       <h1>Settings</h1>
     </header>
     <div class="form">
-      <label>API key (Google AI Studio — free)
+      <label>Provider
+        <select id="s-provider">
+          <option value="groq">Groq — free key, no card (recommended)</option>
+          <option value="gemini">Google AI Studio (Gemini) — free key</option>
+        </select>
+      </label>
+      <div id="key-field">
+      <label>API key (Groq — free)
         <input id="s-key" type="password" placeholder="Pastes once, stays on this device" autocomplete="off">
       </label>
-      <p class="hint">Free key at <b>aistudio.google.com/apikey</b>. Same key as Cast works here.</p>
-      <label>Model<input id="s-model" type="text" placeholder="gemini-3.8-flash"></label>
+      <p class="hint">Free key at <b>console.groq.com/keys</b> — no credit card. Same key works in Cast and Selah.</p>
+      </div>
+      <label>Model<input id="s-model" type="text" placeholder="llama-3.3-70b-versatile"></label>
       <button id="btn-test-key" class="text-btn">Test key</button>
       <div id="test-result" class="hint"></div>
       <p class="hint fine">Selah is a study companion, not a pastor. Answers are generated and may err — always check your own Bible.</p>
