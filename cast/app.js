@@ -27,7 +27,8 @@ function uid(){ return "c"+Date.now().toString(36)+Math.floor(Math.random()*1e4)
 var chars=load(LS_CHARS,null);
 if(!chars){ chars=SEED.slice(); save(LS_CHARS,chars); }
 var chats=load(LS_CHATS,{});
-var settings=load(LS_SET,{provider:"gemini",key:"",base:"https://api.groq.com/openai/v1",model:"gemini-3.8-flash"});
+var settings=load(LS_SET,{provider:"groq",key:"",base:"https://api.groq.com/openai/v1",model:"openai/gpt-oss-120b"});
+if(!settings.provider) settings.provider="groq";
 
 var $=function(id){return document.getElementById(id);};
 var currentChar=null, sending=false;
@@ -110,19 +111,19 @@ function callGemini(system,history,userText){
   });
 }
 function callOpenAI(system,history,userText){
-  var base=(settings.base||"").replace(/\/+$/,"");
-  var model=(settings.model||"").trim();
+  var base=(settings.provider==="groq"?"https://api.groq.com/openai/v1":(settings.base||"")).replace(/\/+$/,"");
+  var model=(settings.model||"openai/gpt-oss-120b").trim();
   var msgs=[{role:"system",content:system}];
   history.forEach(function(t){msgs.push({role:t.role==="me"?"user":"assistant",content:t.text});});
   msgs.push({role:"user",content:userText});
   return fetch(base+"/chat/completions",{method:"POST",
     headers:{"Content-Type":"application/json","Authorization":"Bearer "+settings.key},
-    body:JSON.stringify({model:model,messages:msgs,max_tokens:500,temperature:0.9})
+    body:JSON.stringify({model:model,messages:msgs,max_tokens:500,temperature:0.9,reasoning_format:"hidden"})
   }).then(function(r){return r.json().then(function(d){return{ok:r.ok,status:r.status,body:d};});})
   .then(function(res){
     if(!res.ok) throw new Error("API: "+(res.body.error&&res.body.error.message||("HTTP "+res.status)));
     var text=res.body.choices&&res.body.choices[0]&&res.body.choices[0].message&&res.body.choices[0].message.content||"";
-    text=String(text).trim();
+    text=String(text).replace(/<think>[\s\S]*?<\/think>/g,"").trim();
     if(!text) throw new Error("API returned an empty reply.");
     return text;
   });
@@ -192,7 +193,7 @@ function saveSettings(){
   settings.provider=$("s-provider").value;
   settings.key=$("s-key").value.trim();
   settings.base=$("s-base").value.trim();
-  settings.model=$("s-model").value.trim()||(settings.provider==="gemini"?"gemini-3.8-flash":"llama-3.3-70b-versatile");
+  settings.model=$("s-model").value.trim()||(settings.provider==="gemini"?"gemini-3.8-flash":"openai/gpt-oss-120b");
   save(LS_SET,settings); refreshKeyWarning();
   $("openai-extra").classList.toggle("hidden",settings.provider!=="openai");
 }
@@ -209,7 +210,7 @@ function testKey(){
       .then(function(r){return r.json().then(function(d){return{ok:r.ok,body:d};});})
       .then(function(res){ if(!res.ok) throw new Error(res.body.error&&res.body.error.message||"failed"); return "Key works — model replied."; });
   }else{
-    var base=(settings.base||"").replace(/\/+$/,"");
+    var base=(settings.provider==="groq"?"https://api.groq.com/openai/v1":(settings.base||"")).replace(/\/+$/,"");
     p=fetch(base+"/models",{headers:{"Authorization":"Bearer "+settings.key}})
       .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
       .then(function(){ return "Key works — provider reachable."; });
@@ -232,6 +233,7 @@ $("btn-key-warning").addEventListener("click",function(){loadSettings();show("sc
 $("s-provider").addEventListener("change",function(){
   settings.provider=$("s-provider").value;
   if(settings.provider==="gemini"&&!$("s-model").value) $("s-model").value="gemini-3.8-flash";
+  if(settings.provider==="groq"&&!$("s-model").value) $("s-model").value="openai/gpt-oss-120b";
   if(settings.provider==="openai"&&!$("s-base").value) $("s-base").value="https://api.groq.com/openai/v1";
   saveSettings();
 });
