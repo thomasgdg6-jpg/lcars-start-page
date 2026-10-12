@@ -17,9 +17,9 @@ function load(k,d){ try{var v=localStorage.getItem(k); return v?JSON.parse(v):d;
 function save(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 
-var settings=load(LS_SET,{provider:"groq",key:"",base:"",model:"llama-3.3-70b-versatile"});
+var settings=load(LS_SET,{provider:"groq",key:"",base:"",model:"openai/gpt-oss-120b"});
 if(!settings.provider) settings.provider="groq";
-if(!settings.model) settings.model = settings.provider==="gemini" ? "gemini-3.8-flash" : "llama-3.3-70b-versatile";
+if(!settings.model) settings.model = settings.provider==="gemini" ? "gemini-3.8-flash" : "openai/gpt-oss-120b";
 var history=load(LS_CHAT,[]);
 
 var $=function(id){return document.getElementById(id);};
@@ -59,18 +59,18 @@ function addMsg(role,text){
 }
 
 function askGroq(system,history,userText){
-  var model=(settings.model||"llama-3.3-70b-versatile").trim();
+  var model=(settings.model||"openai/gpt-oss-120b").trim();
   var msgs=[{role:"system",content:system}];
   history.forEach(function(t){msgs.push({role:t.role==="me"?"user":"assistant",content:t.text});});
   msgs.push({role:"user",content:userText});
   return fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",
     headers:{"Content-Type":"application/json","Authorization":"Bearer "+settings.key},
-    body:JSON.stringify({model:model,messages:msgs,max_tokens:800,temperature:0.7})})
+    body:JSON.stringify({model:model,messages:msgs,max_tokens:800,temperature:0.7,reasoning_format:"hidden"})})
   .then(function(r){return r.json().then(function(d){return{ok:r.ok,status:r.status,body:d};});})
   .then(function(res){
     if(!res.ok) throw new Error("Groq: "+(res.body.error&&res.body.error.message||("HTTP "+res.status)));
     var m=res.body.choices&&res.body.choices[0]&&res.body.choices[0].message;
-    var text=String((m&&m.content)||"").trim();
+    var text=String((m&&m.content)||"").replace(/<think>[\s\S]*?<\/think>/g,"").trim();
     if(!text) throw new Error("Groq returned an empty reply.");
     return text;
   });
@@ -152,7 +152,7 @@ function doLookup(){
 }
 
 /* settings */
-function defaultModelFor(p){ return p==="gemini" ? "gemini-3.8-flash" : "llama-3.3-70b-versatile"; }
+function defaultModelFor(p){ return p==="gemini" ? "gemini-3.8-flash" : "openai/gpt-oss-120b"; }
 function loadSettings(){
   $("s-provider").value=settings.provider||"groq";
   $("s-key").value=settings.key||"";
