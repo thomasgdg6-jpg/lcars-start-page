@@ -199,9 +199,10 @@ function render() {
     const d = document.createElement("div");
     d.className = "era-band";
     d.style.left = x(e.start) + "px";
-    d.style.width = (x(Math.min(e.end, MAX_YEAR)) - x(e.start)) + "px";
+    const w = x(Math.min(e.end, MAX_YEAR)) - x(e.start);
+    d.style.width = w + "px";
     d.style.background = `linear-gradient(${e.color}14, ${e.color}05)`;
-    d.innerHTML = `<span>${e.name}</span>`;
+    if (w > 110) d.innerHTML = `<span>${e.name}</span>`;
     erasEl.appendChild(d);
   });
 
@@ -213,7 +214,7 @@ function render() {
 
   /* events */
   eventsEl.innerHTML = "";
-  const showLabels = pxPerYear >= 1.6;
+  /* dots for everything, always */
   EVENTS.forEach((ev, i) => {
     const dot = document.createElement("div");
     dot.className = "event-dot" + (ev.major ? " major" : "");
@@ -221,17 +222,35 @@ function render() {
     dot.dataset.i = i;
     dot.addEventListener("click", () => openDetail(i));
     eventsEl.appendChild(dot);
+  });
 
-    if (showLabels || ev.major) {
+  /* labels: majors at low zoom, everything once zoomed in (idx>=2).
+     Greedy lane assignment across 4 rows; labels that can't fit
+     are hidden until you zoom further. */
+  const LANES = [198, 116, 244, 70];
+  const laneEnd = LANES.map(() => -Infinity);
+  EVENTS
+    .map((ev, i) => ({ ev, i }))
+    .filter(({ ev }) => zoomIdx >= 2 || ev.major)
+    .sort((a, b) => x(a.ev.y) - x(b.ev.y))
+    .forEach(({ ev, i }) => {
+      const cx = x(ev.y);
+      const w = Math.min(150, ev.t.length * 7 + 18);
+      let lane = -1;
+      for (let l = 0; l < LANES.length; l++) {
+        if (cx - w / 2 > laneEnd[l] + 10) { lane = l; break; }
+      }
+      if (lane < 0) return;
+      laneEnd[lane] = cx + w / 2;
       const lab = document.createElement("div");
-      lab.className = "event-label" + (i % 2 ? " above" : "");
-      lab.style.left = x(ev.y) + "px";
+      lab.className = "event-label";
+      lab.style.left = cx + "px";
+      lab.style.top = LANES[lane] + "px";
       lab.textContent = ev.t;
       lab.dataset.i = i;
       lab.addEventListener("click", () => openDetail(i));
       eventsEl.appendChild(lab);
-    }
-  });
+    });
   applySearch($("search").value);
 }
 
