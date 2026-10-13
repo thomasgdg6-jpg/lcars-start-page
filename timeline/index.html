@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Timeline — A Bible Companion</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <h1>Timeline</h1>
+    <div class="topbar-actions">
+      <button id="btn-zoom-out" class="icon-btn" title="Zoom out">−</button>
+      <button id="btn-zoom-in" class="icon-btn" title="Zoom in">+</button>
+      <button id="btn-today" class="icon-btn" title="Jump to Christ">✦</button>
+    </div>
+  </header>
+
+  <div class="searchbar">
+    <input id="search" type="text" placeholder="Search people, places, events…" autocomplete="off">
+  </div>
+
+  <nav id="era-nav" class="era-nav"></nav>
+
+  <div id="viewport" class="viewport">
+    <div id="track" class="track">
+      <div id="eras" class="eras"></div>
+      <div id="axis" class="axis"></div>
+      <div id="events" class="events"></div>
+    </div>
+  </div>
+
+  <div class="hint">Drag to travel through time · tap a marker for the story</div>
+
+  <section id="detail" class="detail hidden">
+    <button id="detail-close" class="detail-close">×</button>
+    <div id="detail-era" class="detail-era"></div>
+    <h2 id="detail-title"></h2>
+    <div id="detail-date" class="detail-date"></div>
+    <p id="detail-desc"></p>
+    <div id="detail-refs" class="detail-refs"></div>
+    <div id="verse-box" class="verse-box hidden">
+      <div id="verse-ref" class="verse-ref"></div>
+      <div id="verse-text" class="verse-text"></div>
+    </div>
+  </section>
+
+  <footer class="footnote">Dates follow a traditional conservative chronology and are approximate — marked <i>c.</i> where scholars differ.</footer>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
