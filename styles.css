@@ -39,6 +39,32 @@ body {
   padding: 12px 14px 28px;
 }
 
+/* ---------- Boot overlay ---------- */
+.boot-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.45s ease;
+}
+
+.boot-overlay.done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot-text {
+  color: var(--orange);
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  font-size: clamp(0.85rem, 3.4vw, 1.2rem);
+  text-align: center;
+  padding: 0 20px;
+}
+
 /* ---------- Header sweep ---------- */
 .lcars-header {
   display: flex;
@@ -103,11 +129,42 @@ body {
 
 .hs-dot { color: var(--orange); font-size: 1rem; }
 
+.snd-toggle {
+  margin-left: auto;
+  background: #111;
+  color: var(--tan);
+  border: 2px solid var(--tan);
+  border-radius: 18px;
+  padding: 6px 16px;
+  font-family: inherit;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.snd-toggle:hover { filter: brightness(1.3); }
+.snd-toggle[aria-pressed="false"] { opacity: 0.55; }
+
 .blink { animation: blink 1.4s steps(2, start) infinite; }
 @keyframes blink { to { visibility: hidden; } }
 
 /* ---------- Panels ---------- */
-.panel { margin-bottom: 22px; }
+.panel {
+  margin-bottom: 22px;
+  animation: panelIn 0.55s ease both;
+}
+
+main .panel:nth-child(1) { animation-delay: 0.05s; }
+main .panel:nth-child(2) { animation-delay: 0.16s; }
+main .panel:nth-child(3) { animation-delay: 0.27s; }
+main .panel:nth-child(4) { animation-delay: 0.38s; }
+
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 .panel-head {
   display: flex;
@@ -239,11 +296,31 @@ body {
   flex-wrap: wrap;
 }
 
+.stat-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex: 0 0 auto;
+  align-self: center;
+  animation: dotblink 2.2s ease-in-out infinite;
+}
+
+.stat-dot.d2 { animation-duration: 3.1s; background: var(--peri); }
+.stat-dot.d3 { animation-duration: 1.6s; background: var(--purple); }
+.stat-dot.ok { background: var(--tan); animation: dotblink 4s ease-in-out infinite; }
+
+@keyframes dotblink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
 .stat-label {
   color: var(--peri);
   font-weight: 700;
   letter-spacing: 0.12em;
   font-size: 0.8rem;
+  flex: 1;
 }
 
 .stat-val {
@@ -254,6 +331,68 @@ body {
 }
 
 .stat-val.ok { color: var(--tan); }
+
+/* ---------- Power distribution ---------- */
+.pwr-block {
+  margin: 14px 0 4px;
+  background: #111;
+  border-radius: 14px;
+  padding: 12px 16px 14px;
+  border: 1px solid #2a2a2a;
+}
+
+.pwr-title {
+  color: var(--blue);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  margin-bottom: 10px;
+}
+
+.pwr-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.pwr-label {
+  color: var(--peri);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  width: 64px;
+  flex: 0 0 auto;
+}
+
+.pwr-bar {
+  flex: 1;
+  height: 12px;
+  background: #1c1c1c;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.pwr-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 8px;
+  transition: width 1.2s ease;
+}
+
+.pwr-fill.f-warp { background: var(--orange); }
+.pwr-fill.f-impulse { background: var(--tan); }
+.pwr-fill.f-shield { background: var(--peri); }
+.pwr-fill.f-sensor { background: var(--purple); }
+
+.pwr-val {
+  color: var(--peach);
+  font-size: 0.72rem;
+  font-weight: 800;
+  width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
 
 .tip-box {
   margin: 14px 0;
@@ -287,6 +426,15 @@ body.red-alert .alert-btn { animation: alertpulse 1s ease-in-out infinite; }
 @keyframes alertpulse {
   0%, 100% { filter: brightness(1); }
   50% { filter: brightness(1.6); }
+}
+
+body.red-alert .station {
+  animation: rededge 1s ease-in-out infinite;
+}
+
+@keyframes rededge {
+  0%, 100% { box-shadow: inset 0 0 0 0 rgba(255, 51, 51, 0); }
+  50% { box-shadow: inset 0 0 42px 6px rgba(255, 51, 51, 0.28); }
 }
 
 /* ---------- Captain's log ---------- */
@@ -358,4 +506,13 @@ body.red-alert .alert-btn { animation: alertpulse 1s ease-in-out infinite; }
   .hdr-title { padding: 0 12px; }
   .panel-body { padding: 12px 14px; }
   .link-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .panel { animation: none; }
+  .blink, .stat-dot { animation: none; }
+  body.red-alert .alert-btn, body.red-alert .station { animation: none; }
+  .pwr-fill { transition: none; }
+  .boot-overlay { display: none; }
 }
