@@ -8,9 +8,13 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="https://files.catbox.moe/0svatu.png">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
+<div class="boot-overlay" id="bootOverlay" aria-hidden="true">
+  <div class="boot-text">INITIALIZING LCARS INTERFACE<span class="blink">&hellip;</span></div>
+</div>
+
 <div class="station">
 
   <header class="lcars-header">
@@ -22,6 +26,7 @@
     <span class="hs-pill">U.S.S. TWICE AS NICE</span>
     <span class="hs-text">LIBRARY COMPUTER ACCESS // RETRIEVAL SYSTEM</span>
     <span class="blink hs-dot" aria-hidden="true">&#9679;</span>
+    <button class="snd-toggle" id="soundBtn" type="button" aria-pressed="true">SOUND: ON</button>
   </div>
 
   <main>
@@ -49,6 +54,9 @@
       <div class="panel-body">
         <nav class="link-grid">
           <a class="lcars-btn c-orange" href="https://thomasgdg6-jpg.github.io/twice-as-nice-gift-cards/" target="_blank" rel="noopener">GIFT CARD APP<span class="btn-sub">TWICE AS NICE</span></a>
+          <a class="lcars-btn c-purple" href="https://thomasgdg6-jpg.github.io/lcars-start-page/cast/" target="_blank" rel="noopener">CAST<span class="btn-sub">AI CREW QUARTERS</span></a>
+          <a class="lcars-btn c-peri" href="https://thomasgdg6-jpg.github.io/lcars-start-page/selah/" target="_blank" rel="noopener">SELAH<span class="btn-sub">BIBLE COMPANION</span></a>
+          <a class="lcars-btn c-tan" href="https://thomasgdg6-jpg.github.io/lcars-start-page/timeline/" target="_blank" rel="noopener">TIMELINE<span class="btn-sub">BIBLE CHRONOLOGY</span></a>
           <a class="lcars-btn c-purple" href="https://supabase.com/dashboard/project/pxnskbpjwxshnlbufmgi" target="_blank" rel="noopener">SUPABASE<span class="btn-sub">DATABASE CONSOLE</span></a>
           <a class="lcars-btn c-peri" href="https://mail.google.com/" target="_blank" rel="noopener">GMAIL<span class="btn-sub">SUBSPACE MAIL</span></a>
           <a class="lcars-btn c-tan" href="https://dash.cloudflare.com/" target="_blank" rel="noopener">CLOUDFLARE<span class="btn-sub">STATION HOSTING</span></a>
@@ -62,12 +70,25 @@
         <div class="ph-bar"><div class="b1"></div><div class="b2"></div><div class="b3"></div></div>
       </div>
       <div class="panel-body">
-        <div class="stat-row"><span class="stat-label">WARP CORE OUTPUT</span><span class="stat-val" id="warpLevel">--</span></div>
-        <div class="stat-row"><span class="stat-label">SHIELD INTEGRITY</span><span class="stat-val" id="shieldLevel">--</span></div>
-        <div class="stat-row"><span class="stat-label">HULL INTEGRITY</span><span class="stat-val" id="hullLevel">--</span></div>
-        <div class="stat-row"><span class="stat-label">COFFEE RESERVES</span><span class="stat-val ok">NOMINAL</span></div>
-        <div class="stat-row"><span class="stat-label">TRIBBLE COUNT</span><span class="stat-val ok">0 &mdash; POLICY ENFORCED</span></div>
-        <div class="stat-row"><span class="stat-label">BOUTIQUE INVENTORY</span><span class="stat-val ok">FULLY STOCKED</span></div>
+        <div class="stat-row"><span class="stat-dot" aria-hidden="true"></span><span class="stat-label">WARP CORE OUTPUT</span><span class="stat-val" id="warpLevel">--</span></div>
+        <div class="stat-row"><span class="stat-dot d2" aria-hidden="true"></span><span class="stat-label">SHIELD INTEGRITY</span><span class="stat-val" id="shieldLevel">--</span></div>
+        <div class="stat-row"><span class="stat-dot d3" aria-hidden="true"></span><span class="stat-label">HULL INTEGRITY</span><span class="stat-val" id="hullLevel">--</span></div>
+        <div class="stat-row"><span class="stat-dot d2" aria-hidden="true"></span><span class="stat-label">IMPULSE DRIVE</span><span class="stat-val" id="impulseLevel">--</span></div>
+        <div class="stat-row"><span class="stat-dot d3" aria-hidden="true"></span><span class="stat-label">SENSOR ARRAY</span><span class="stat-val" id="sensorLevel">--</span></div>
+        <div class="stat-row"><span class="stat-dot" aria-hidden="true"></span><span class="stat-label">DEFLECTOR DISH</span><span class="stat-val" id="deflectorLevel">--</span></div>
+        <div class="stat-row"><span class="stat-dot ok" aria-hidden="true"></span><span class="stat-label">LIFE SUPPORT</span><span class="stat-val ok">100%</span></div>
+        <div class="stat-row"><span class="stat-dot ok" aria-hidden="true"></span><span class="stat-label">COFFEE RESERVES</span><span class="stat-val ok">NOMINAL</span></div>
+        <div class="stat-row"><span class="stat-dot ok" aria-hidden="true"></span><span class="stat-label">TRIBBLE COUNT</span><span class="stat-val ok">0 &mdash; POLICY ENFORCED</span></div>
+        <div class="stat-row"><span class="stat-dot ok" aria-hidden="true"></span><span class="stat-label">BOUTIQUE INVENTORY</span><span class="stat-val ok">FULLY STOCKED</span></div>
+
+        <div class="pwr-block">
+          <div class="pwr-title">POWER DISTRIBUTION</div>
+          <div class="pwr-row"><span class="pwr-label">WARP</span><div class="pwr-bar"><div class="pwr-fill f-warp" id="pwrWarp"></div></div><span class="pwr-val" id="pwrWarpVal">--</span></div>
+          <div class="pwr-row"><span class="pwr-label">IMPULSE</span><div class="pwr-bar"><div class="pwr-fill f-impulse" id="pwrImpulse"></div></div><span class="pwr-val" id="pwrImpulseVal">--</span></div>
+          <div class="pwr-row"><span class="pwr-label">SHIELDS</span><div class="pwr-bar"><div class="pwr-fill f-shield" id="pwrShield"></div></div><span class="pwr-val" id="pwrShieldVal">--</span></div>
+          <div class="pwr-row"><span class="pwr-label">SENSORS</span><div class="pwr-bar"><div class="pwr-fill f-sensor" id="pwrSensor"></div></div><span class="pwr-val" id="pwrSensorVal">--</span></div>
+        </div>
+
         <div class="tip-box">
           <span class="tip-label">FLEET ADVISORY</span>
           <p class="tip-text" id="tipText">STANDING BY FOR ADVISORY UPLINK&hellip;</p>
@@ -93,11 +114,11 @@
   </main>
 
   <footer class="foot">
-    <span>LCARS INTERFACE 4.1</span>
+    <span>LCARS INTERFACE 4.2</span>
     <span>&copy; <span id="year">2026</span> GEORGE&rsquo;S STATION</span>
   </footer>
 
 </div>
-<script src="app.js"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
