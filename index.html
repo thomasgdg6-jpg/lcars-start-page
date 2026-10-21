@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="https://files.catbox.moe/0svatu.png">
-<link rel="stylesheet" href="styles.css?v=3">
+<link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
 <div class="boot-overlay" id="bootOverlay" aria-hidden="true">
@@ -48,6 +48,26 @@
 
     <section class="panel">
       <div class="panel-head">
+        <span class="ph-pill">LAUNCH CONSOLE</span>
+        <div class="ph-bar"><div class="b1"></div><div class="b2"></div><div class="b3"></div></div>
+      </div>
+      <div class="panel-body">
+        <nav class="link-grid launch-grid">
+          <a class="lcars-btn c-orange" href="tel:">PHONE<span class="btn-sub">VOICE COMMS</span></a>
+          <a class="lcars-btn c-purple" href="sms:">MESSAGES<span class="btn-sub">TEXT COMMS</span></a>
+          <a class="lcars-btn c-peri" href="mailto:">EMAIL<span class="btn-sub">COMPOSE MESSAGE</span></a>
+          <a class="lcars-btn c-tan" href="intent:#Intent;action=android.media.action.STILL_IMAGE_CAMERA;S.browser_fallback_url=https%3A%2F%2Fphotos.google.com%2F;end">CAMERA<span class="btn-sub">VISUAL LOG</span></a>
+          <a class="lcars-btn c-orange" href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_EMAIL;S.browser_fallback_url=https%3A%2F%2Fmail.google.com%2F;end">GMAIL<span class="btn-sub">EMAIL APP</span></a>
+          <a class="lcars-btn c-purple" href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MAPS;S.browser_fallback_url=https%3A%2F%2Fmaps.google.com%2F;end">MAPS<span class="btn-sub">NAV SENSORS</span></a>
+          <a class="lcars-btn c-peri" href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_CONTACTS;S.browser_fallback_url=https%3A%2F%2Fcontacts.google.com%2F;end">CONTACTS<span class="btn-sub">CREW MANIFEST</span></a>
+          <a class="lcars-btn c-tan" href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_CALENDAR;S.browser_fallback_url=https%3A%2F%2Fcalendar.google.com%2F;end">CALENDAR<span class="btn-sub">DUTY ROSTER</span></a>
+        </nav>
+        <p class="launch-note">DIRECT APP UPLINKS &mdash; IF AN APP IS NOT INSTALLED, ITS WEB VERSION OPENS INSTEAD.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
         <span class="ph-pill">NAVIGATION</span>
         <div class="ph-bar"><div class="b1"></div><div class="b2"></div><div class="b3"></div></div>
       </div>
@@ -60,6 +80,8 @@
           <a class="lcars-btn c-purple" href="https://supabase.com/dashboard/project/pxnskbpjwxshnlbufmgi" target="_blank" rel="noopener">SUPABASE<span class="btn-sub">DATABASE CONSOLE</span></a>
           <a class="lcars-btn c-peri" href="https://mail.google.com/" target="_blank" rel="noopener">GMAIL<span class="btn-sub">SUBSPACE MAIL</span></a>
           <a class="lcars-btn c-tan" href="https://dash.cloudflare.com/" target="_blank" rel="noopener">CLOUDFLARE<span class="btn-sub">STATION HOSTING</span></a>
+          <a class="lcars-btn c-orange" href="https://starbaseobsidian.com" target="_blank" rel="noopener">STARBASE OBSIDIAN<span class="btn-sub">SIM COMMAND</span></a>
+          <a class="lcars-btn c-purple" href="https://www.vinted.com" target="_blank" rel="noopener">VINTED<span class="btn-sub">BOUTIQUE SALES</span></a>
         </nav>
       </div>
     </section>
@@ -114,7 +136,7 @@
   </main>
 
   <footer class="foot">
-    <span>LCARS INTERFACE 4.2</span>
+    <span>LCARS INTERFACE 4.3</span>
     <span>&copy; <span id="year">2026</span> GEORGE&rsquo;S STATION</span>
   </footer>
 

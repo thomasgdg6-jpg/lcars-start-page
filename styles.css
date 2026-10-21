@@ -160,6 +160,7 @@ main .panel:nth-child(1) { animation-delay: 0.05s; }
 main .panel:nth-child(2) { animation-delay: 0.16s; }
 main .panel:nth-child(3) { animation-delay: 0.27s; }
 main .panel:nth-child(4) { animation-delay: 0.38s; }
+main .panel:nth-child(5) { animation-delay: 0.49s; }
 
 @keyframes panelIn {
   from { opacity: 0; transform: translateY(14px); }
@@ -277,6 +278,25 @@ main .panel:nth-child(4) { animation-delay: 0.38s; }
   font-weight: 700;
   letter-spacing: 0.16em;
   opacity: 0.75;
+}
+
+/* ---------- Launch console (big app-uplink buttons) ---------- */
+.launch-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.launch-grid .lcars-btn {
+  border-radius: 34px;
+  padding: 22px 22px;
+  font-size: 1.05rem;
+}
+
+.launch-note {
+  color: var(--dim);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  margin: 12px 2px 0;
 }
 
 .c-orange { background: var(--orange); }
