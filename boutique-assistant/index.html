@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Boutique Assistant - Twice As Nice Boutique</title>
+<style>
+  :root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fdf8f1; color: #222; font-size: 18px; line-height: 1.45; }
+  header { background: #5b2d4a; color: #fff; padding: 22px 18px; text-align: center; }
+  header h1 { margin: 0; font-size: 30px; line-height: 1.2; }
+  header p { margin: 6px 0 0; font-size: 19px; }
+  header .tag { margin-top: 10px; font-size: 15px; opacity: .9; }
+  main { max-width: 720px; margin: 0 auto; padding: 16px; }
+  section { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+  h2 { margin: 0 0 12px; font-size: 24px; }
+  h3 { margin: 16px 0 6px; font-size: 20px; }
+  label { display: block; font-weight: 700; margin: 14px 0 6px; }
+  input, select, textarea { width: 100%; font-size: 18px; padding: 14px; border: 1px solid #888; border-radius: 10px; background: #fff; color: #222; }
+  textarea { min-height: 120px; }
+  button { width: 100%; font-size: 19px; font-weight: 700; padding: 16px; border: 0; border-radius: 12px; background: #5b2d4a; color: #fff; margin-top: 14px; cursor: pointer; }
+  button.secondary { background: #eee; color: #222; border: 1px solid #888; }
+  button.small { width: auto; padding: 12px 16px; font-size: 17px; margin: 8px 8px 0 0; }
+  button.danger { background: #8b1e1e; }
+  .note { background: #fff6d6; border: 1px solid #d9b800; border-radius: 10px; padding: 12px; font-size: 16px; }
+  .summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; }
+  .stat { border: 1px solid #ddd; border-radius: 10px; padding: 12px 6px; }
+  .stat strong { display: block; font-size: 30px; }
+  .stat span { font-size: 15px; }
+  .item { border: 1px solid #ddd; border-radius: 10px; padding: 14px; margin-top: 14px; }
+  .item img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; }
+  .example { border: 3px dashed #b00; }
+  .example-badge { background: #b00; color: #fff; font-weight: 700; padding: 6px 10px; border-radius: 6px; display: inline-block; margin-bottom: 10px; }
+  #photoPreview { width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; display: none; margin-top: 10px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .muted { color: #555; font-size: 16px; }
+  footer { text-align: center; padding: 10px 16px 30px; color: #555; font-size: 15px; }
+  @media (max-width: 520px) { .summary { grid-template-columns: 1fr; } .row { grid-template-columns: 1fr; } }
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#5b2d4a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Boutique Asst">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+</head>
+<body>
+<header>
+  <h1>The Boutique Assistant</h1>
+  <p>Twice As Nice Boutique</p>
+  <p class="tag">Test prototype &mdash; Capture, Generate, Track, Review. Nothing here publishes anywhere.</p>
+</header>
+
+<main>
+  <section aria-labelledby="review-heading">
+    <h2 id="review-heading">Review &mdash; This Week</h2>
+    <p class="muted">New listings and sales count the last 7 days. Items needing attention have been Available for more than 30 days.</p>
+    <div class="summary">
+      <div class="stat"><strong id="statNew">0</strong><span>New listings<br>this week</span></div>
+      <div class="stat"><strong id="statSold">0</strong><span>Items sold<br>this week</span></div>
+      <div class="stat"><strong id="statAttention">0</strong><span>Need<br>attention</span></div>
+    </div>
+    <p id="attentionList" class="muted"></p>
+  </section>
+
+  <section aria-labelledby="capture-heading">
+    <h2 id="capture-heading">1. Capture</h2>
+    <p class="note">Your photo stays on this device only. It is stored in this browser, not sent to any server. There is no account, no external AI, and no analytics in this prototype.</p>
+    <label for="photo">Photo</label>
+    <p class="note">Tip: open this page in Chrome or Samsung Internet, not in the chat file viewer — the viewer can block the photo picker, which is why Choose File can go nowhere there. In a browser, tapping Choose File should offer Camera or Files.</p>
+    <input type="file" id="photo" accept="image/*">
+    <img id="photoPreview" alt="Photo preview">
+    <label for="lensFound">Google Lens check (manual step)</label>
+    <p class="note">Google Lens does not send its result back to this app. Open Google Lens on this photo yourself, see what it finds, then type that brand or item name here. If Lens found nothing useful, leave this blank.</p>
+    <input type="text" id="lensFound" autocomplete="off" placeholder="Example: Nike Air Max, as found in Lens">
+    <label for="brand">Brand</label>
+    <input type="text" id="brand" autocomplete="off" placeholder="Example: leave blank if unknown">
+    <label for="itemType">Item type</label>
+    <input type="text" id="itemType" autocomplete="off" placeholder="Example: dress, jacket, handbag">
+    <div class="row">
+      <div>
+        <label for="size">Size</label>
+        <input type="text" id="size" autocomplete="off" placeholder="Example: M">
+      </div>
+      <div>
+        <label for="condition">Condition</label>
+        <select id="condition">
+          <option>New</option>
+          <option>New, without store tags</option>
+          <option selected>Like New</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="cost">Cost ($)</label>
+        <input type="number" id="cost" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+      </div>
+      <div>
+        <label for="askingPrice">Asking price ($)</label>
+        <input type="number" id="askingPrice" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+      </div>
+    </div>
+    <button type="button" id="generateBtn">Generate draft listing</button>
+  </section>
+
+  <section aria-labelledby="generate-heading">
+    <h2 id="generate-heading">2. Generate &mdash; Draft (template-based, not AI)</h2>
+    <p class="note">This draft is built from the fields above using a fixed template. It is <strong>not</strong> AI-written. Review and edit everything below before you use it anywhere. This app does <strong>not</strong> publish to Vinted, Facebook, or anywhere else.</p>
+    <label for="description">Product description (edit as needed)</label>
+    <textarea id="description" placeholder="Fill in Capture above, then tap Generate draft listing."></textarea>
+    <label for="caption">Promotional caption (edit as needed)</label>
+    <textarea id="caption" placeholder="Fill in Capture above, then tap Generate draft listing."></textarea>
+    <p id="priceNote" class="muted">Asking price: not set yet.</p>
+    <p class="note" id="rangeNote">Suggested listing range: enter an asking price first. Any range shown here is a suggestion only, not a valuation. You set the price.</p>
+    <button type="button" id="copyDescBtn" class="secondary">Copy description</button>
+    <button type="button" id="copyCaptionBtn" class="secondary">Copy caption</button>
+    <button type="button" id="saveBtn">Save to inventory</button>
+    <button type="button" id="cancelEditBtn" class="secondary" style="display:none">Cancel edit</button>
+    <p id="saveMsg" class="muted" role="status"></p>
+  </section>
+
+  <section aria-labelledby="track-heading">
+    <h2 id="track-heading">3. Track &mdash; Inventory</h2>
+    <p class="muted">Saved on this device only, in this browser. Clearing this browser's site data will clear this list.</p>
+    <div id="inventory"></div>
+    <button type="button" id="clearExampleBtn" class="secondary">Delete the example item</button>
+  </section>
+</main>
+
+<footer>
+  The Boutique Assistant &mdash; test prototype for Twice As Nice Boutique.<br>
+  Template-based drafts only. No publishing, no account, no server, no AI.
+<p class="note" style="max-width:720px;margin:14px auto;text-align:left;">Installing this app: on Android, open this page in Chrome, open the menu, and tap "Install app" or "Add to Home screen". On iPhone, open this page in Safari, tap Share, and tap "Add to Home Screen". After the first load it works offline. Your inventory is saved on this device only, so a list on one phone will not appear on another.</p>
+</footer>
+
+<script>
+"use strict";
+var KEY = "boutiqueAssistantInventoryV1";
+var photoData = "";
+var editingId = null;
+var exampleId = "example-item-please-delete";
+
+function money(n) {
+  return "$" + Number(n).toFixed(2);
+}
+function fmtDate(iso) {
+  try { return new Date(iso).toLocaleDateString("en-US"); } catch (e) { return iso; }
+}
+function load() {
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (!raw) return null;
+    var items = JSON.parse(raw);
+    return Array.isArray(items) ? items : null;
+  } catch (e) { return null; }
+}
+function save(items) {
+  localStorage.setItem(KEY, JSON.stringify(items));
+}
+function seedIfEmpty() {
+  var items = load();
+  if (items !== null) return items;
+  items = [{
+    id: exampleId,
+    brand: "EXAMPLE ITEM",
+    type: "Example dress",
+    size: "M",
+    condition: "Good",
+    cost: 0,
+    price: 0,
+    status: "Available",
+    dateAdded: new Date().toISOString(),
+    soldDate: null,
+    photo: "",
+    isExample: true
+  }];
+  save(items);
+  return items;
+}
+function descriptionFor(d) {
+  var brand = d.brand ? d.brand + " " : "";
+  var type = d.type || "item";
+  var size = d.size ? " Size " + d.size + "." : "";
+  var out = brand + type + " from Twice As Nice Boutique." + size;
+  out += " Condition: " + d.condition + ".";
+  if (d.lens) out += " Google Lens check noted: " + d.lens + ".";
+  if (d.price) out += " Asking price: " + money(d.price) + ".";
+  out += " Please check the photos and ask us if you have any questions before buying.";
+  return out;
+}
+function captionFor(d) {
+  var brand = d.brand ? d.brand + " " : "";
+  var type = d.type || "item";
+  var text = "New at Twice As Nice Boutique! " + brand + type;
+  if (d.size) text += " (Size " + d.size + ")";
+  text += " in " + d.condition + " condition.";
+  if (d.price) text += " Asking " + money(d.price) + ".";
+  text += " Come see it in the shop, or message us to claim it!";
+  return text;
+}
+function rangeText(price) {
+  if (!price) return "Suggested listing range: enter an asking price first. Any range shown here is a suggestion only, not a valuation. You set the price.";
+  var low = Math.round(price * 0.9 * 100) / 100;
+  var high = Math.round(price * 1.1 * 100) / 100;
+  return "Suggested listing range (suggestion only, not a valuation): " + money(low) + " to " + money(high) + ". This range is simply 10% below and 10% above the asking price you entered. You set the price, and you can change it.";
+}
+function render() {
+  var items = seedIfEmpty();
+  var now = Date.now();
+  var sevenDays = 7 * 24 * 60 * 60 * 1000;
+  var thirtyDays = 30 * 24 * 60 * 60 * 1000;
+  var newCount = 0, soldCount = 0, attention = [];
+  items.forEach(function (it) {
+    if (now - new Date(it.dateAdded).getTime() <= sevenDays) newCount++;
+    if (it.status === "Sold" && it.soldDate && now - new Date(it.soldDate).getTime() <= sevenDays) soldCount++;
+    if (it.status === "Available" && now - new Date(it.dateAdded).getTime() > thirtyDays) attention.push(it);
+  });
+  document.getElementById("statNew").textContent = newCount;
+  document.getElementById("statSold").textContent = soldCount;
+  document.getElementById("statAttention").textContent = attention.length;
+  document.getElementById("attentionList").textContent = attention.length
+    ? "Needing attention: " + attention.map(function (it) { return (it.brand || "Unbranded") + " " + (it.type || "item"); }).join("; ") + "."
+    : "No items need attention right now.";
+  var wrap = document.getElementById("inventory");
+  wrap.innerHTML = "";
+  if (!items.length) {
+    wrap.innerHTML = "<p>Your inventory is empty. Add an item above to start.</p>";
+    return;
+  }
+  items.slice().reverse().forEach(function (it) {
+    var div = document.createElement("div");
+    div.className = "item" + (it.isExample ? " example" : "");
+    var html = "";
+    if (it.isExample) html += '<span class="example-badge">EXAMPLE ITEM &mdash; PLEASE DELETE &mdash; NOT REAL STOCK</span>';
+    if (it.photo) html += '<img src="' + it.photo.replace(/"/g, "") + '" alt="Item photo">';
+    html += "<h3>" + escapeHtml((it.brand || "Unbranded") + " " + (it.type || "item")) + "</h3>";
+    if (it.lens) html += "<p>Lens check: " + escapeHtml(it.lens) + "</p>";
+    html += "<p>Size: " + escapeHtml(it.size || "Not listed") + " &middot; Condition: " + escapeHtml(it.condition) +
+      " &middot; Status: " + escapeHtml(it.status) + "<br>Cost: " + money(it.cost || 0) +
+      " &middot; Asking price: " + money(it.price || 0) + "<br>Date added: " + fmtDate(it.dateAdded) + "</p>";
+    div.innerHTML = html;
+    var soldBtn = document.createElement("button");
+    soldBtn.type = "button"; soldBtn.className = "small";
+    soldBtn.textContent = it.status === "Sold" ? "Mark Available" : "Mark Sold";
+    soldBtn.onclick = function () {
+      var all = load() || [];
+      all.forEach(function (x) {
+        if (x.id === it.id) {
+          x.status = x.status === "Sold" ? "Available" : "Sold";
+          x.soldDate = x.status === "Sold" ? new Date().toISOString() : null;
+        }
+      });
+      save(all); render();
+    };
+    var delBtn = document.createElement("button");
+    delBtn.type = "button"; delBtn.className = "small danger"; delBtn.textContent = "Delete";
+    delBtn.onclick = function () {
+      save((load() || []).filter(function (x) { return x.id !== it.id; }));
+      render();
+    };
+    var editBtn = document.createElement("button");
+    editBtn.type = "button"; editBtn.className = "small"; editBtn.textContent = "Edit";
+    editBtn.onclick = function () {
+      document.getElementById("brand").value = it.brand || "";
+      document.getElementById("lensFound").value = it.lens || "";
+      document.getElementById("itemType").value = it.type || "";
+      document.getElementById("size").value = it.size || "";
+      document.getElementById("condition").value = it.condition || "Like New";
+      document.getElementById("cost").value = it.cost || 0;
+      document.getElementById("askingPrice").value = it.price || 0;
+      photoData = it.photo || "";
+      var prev = document.getElementById("photoPreview");
+      if (photoData) { prev.src = photoData; prev.style.display = "block"; } else { prev.style.display = "none"; }
+      editingId = it.id;
+      document.getElementById("saveBtn").textContent = "Update item";
+      document.getElementById("cancelEditBtn").style.display = "block";
+      document.getElementById("saveMsg").textContent = "Editing this item. Change any field above, then tap Update item.";
+      window.scrollTo(0, 0);
+    };
+    div.appendChild(soldBtn); div.appendChild(editBtn); div.appendChild(delBtn);
+    wrap.appendChild(div);
+  });
+}
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+document.getElementById("photo").addEventListener("change", function (ev) {
+  var file = ev.target.files && ev.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function () {
+    var img = new Image();
+    img.onload = function () {
+      var max = 800, w = img.width, h = img.height;
+      if (w > max || h > max) {
+        var scale = Math.min(max / w, max / h);
+        w = Math.round(w * scale); h = Math.round(h * scale);
+      }
+      var c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      photoData = c.toDataURL("image/jpeg", 0.82);
+      var prev = document.getElementById("photoPreview");
+      prev.src = photoData; prev.style.display = "block";
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+});
+document.getElementById("generateBtn").addEventListener("click", function () {
+  var d = {
+    brand: document.getElementById("brand").value.trim(),
+    lens: document.getElementById("lensFound").value.trim(),
+    type: document.getElementById("itemType").value.trim(),
+    size: document.getElementById("size").value.trim(),
+    condition: document.getElementById("condition").value,
+    price: parseFloat(document.getElementById("askingPrice").value) || 0
+  };
+  document.getElementById("description").value = descriptionFor(d);
+  document.getElementById("caption").value = captionFor(d);
+  document.getElementById("priceNote").textContent = d.price ? "Asking price: " + money(d.price) + " (your price)." : "Asking price: not set yet.";
+  document.getElementById("rangeNote").textContent = rangeText(d.price);
+});
+document.getElementById("saveBtn").addEventListener("click", function () {
+  var items = load() || [];
+  if (editingId) {
+    items.forEach(function (x) {
+      if (x.id === editingId) {
+        x.brand = document.getElementById("brand").value.trim();
+        x.lens = document.getElementById("lensFound").value.trim();
+        x.type = document.getElementById("itemType").value.trim();
+        x.size = document.getElementById("size").value.trim();
+        x.condition = document.getElementById("condition").value;
+        x.cost = parseFloat(document.getElementById("cost").value) || 0;
+        x.price = parseFloat(document.getElementById("askingPrice").value) || 0;
+        x.photo = photoData;
+        x.isExample = false;
+      }
+    });
+    save(items);
+    editingId = null;
+    document.getElementById("saveBtn").textContent = "Save to inventory";
+    document.getElementById("cancelEditBtn").style.display = "none";
+    document.getElementById("saveMsg").textContent = "Item updated.";
+    render();
+    return;
+  }
+  var item = {
+    id: "item-" + Date.now(),
+    brand: document.getElementById("brand").value.trim(),
+    lens: document.getElementById("lensFound").value.trim(),
+    type: document.getElementById("itemType").value.trim(),
+    size: document.getElementById("size").value.trim(),
+    condition: document.getElementById("condition").value,
+    cost: parseFloat(document.getElementById("cost").value) || 0,
+    price: parseFloat(document.getElementById("askingPrice").value) || 0,
+    status: "Available",
+    dateAdded: new Date().toISOString(),
+    soldDate: null,
+    photo: photoData,
+    isExample: false
+  };
+  items.push(item);
+  save(items);
+  document.getElementById("saveMsg").textContent = "Saved to inventory.";
+  render();
+});
+document.getElementById("cancelEditBtn").addEventListener("click", function () {
+  editingId = null;
+  document.getElementById("saveBtn").textContent = "Save to inventory";
+  document.getElementById("cancelEditBtn").style.display = "none";
+  document.getElementById("saveMsg").textContent = "Edit cancelled. Nothing was changed.";
+});
+document.getElementById("copyDescBtn").addEventListener("click", function () {
+  var el = document.getElementById("description"); el.select();
+  try { document.execCommand("copy"); } catch (e) {}
+});
+document.getElementById("copyCaptionBtn").addEventListener("click", function () {
+  var el = document.getElementById("caption"); el.select();
+  try { document.execCommand("copy"); } catch (e) {}
+});
+document.getElementById("clearExampleBtn").addEventListener("click", function () {
+  save((load() || []).filter(function (x) { return x.id !== exampleId; }));
+  render();
+});
+render();
+</script>
+<script>
+"use strict";
+try {
+  if ("serviceWorker" in navigator && (window.location.protocol === "https:" || window.location.hostname === "localhost")) {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  }
+} catch (e) {}
+</script>
+</body>
+</html>

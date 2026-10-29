@@ -1,0 +1,25 @@
+{
+  "name": "The Boutique Assistant",
+  "short_name": "Boutique Asst",
+  "description": "Capture, generate, track, and review listings for Twice As Nice Boutique. Offline-first; inventory saved on this device only.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf8f1",
+  "theme_color": "#5b2d4a",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
