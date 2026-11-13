@@ -34,6 +34,16 @@
   .item img { width: 100%; aspect-ratio: 4/5; max-height: none; object-fit: cover; border-radius: 10px; box-shadow: 0 2px 8px rgba(91,45,74,.08); }
   .example { border: 2px dashed #a89a8f; }
   .example-badge { background: #6b5a54; color: #fff; font-weight: 700; font-size: 13px; padding: 5px 10px; border-radius: 999px; display: inline-block; margin-bottom: 10px; }
+  .step-nav { position: sticky; top: 0; z-index: 10; background: #fdf8f1; border-bottom: 1px solid #e8ddd2; display: flex; justify-content: center; gap: 2px; padding: 0 4px; }
+  .step-nav a { color: #5b2d4a; text-decoration: none; font-weight: 700; font-size: 18px; padding: 12px 10px; border-bottom: 3px solid transparent; }
+  .step-nav a.active { border-bottom-color: #b08d3e; }
+  section { scroll-margin-top: 64px; }
+  .photo-wrap { position: relative; }
+  .price-tag { position: absolute; right: 10px; bottom: 10px; background: #fdf8f1; color: #5b2d4a; font-weight: 700; font-size: 18px; padding: 6px 12px; border: 1px solid #b08d3e; border-radius: 6px; transform: rotate(-2deg); box-shadow: 0 2px 6px rgba(91,45,74,.18); }
+  .price-tag-nophoto { position: static; display: inline-block; margin: 8px 0 2px; }
+  .status-pill { display: inline-block; font-size: 16px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+  .status-available { color: #5b2d4a; border: 1.5px solid #5b2d4a; background: #fff; }
+  .status-sold { color: #fff; background: #7a8b6d; }
   #photoPreview { width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; display: none; margin-top: 10px; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .muted { color: #6b5a54; font-size: 16px; }
@@ -55,9 +65,15 @@
   <p>Twice As Nice Boutique</p>
   <p class="tag">Test prototype &mdash; Capture, Generate, Track, Review. Nothing here publishes anywhere.</p>
 </header>
+<nav class="step-nav" aria-label="Sections">
+  <a href="#review">Review</a>
+  <a href="#capture">Capture</a>
+  <a href="#generate">Generate</a>
+  <a href="#track">Track</a>
+</nav>
 
 <main>
-  <section aria-labelledby="review-heading">
+  <section id="review" aria-labelledby="review-heading">
     <h2 id="review-heading">Review &mdash; This Week</h2>
     <p class="muted">New listings and sales count the last 7 days. Items needing attention have been Available for more than 30 days.</p>
     <div class="summary">
@@ -68,7 +84,7 @@
     <p id="attentionList" class="muted"></p>
   </section>
 
-  <section aria-labelledby="capture-heading">
+  <section id="capture" aria-labelledby="capture-heading">
     <h2 id="capture-heading">1. Capture</h2>
     <p class="note">Your photo stays on this device only. It is stored in this browser, not sent to any server. There is no account, no external AI, and no analytics in this prototype.</p>
     <label for="photo">Photo</label>
@@ -111,7 +127,7 @@
     <button type="button" id="generateBtn">Generate draft listing</button>
   </section>
 
-  <section aria-labelledby="generate-heading">
+  <section id="generate" aria-labelledby="generate-heading">
     <h2 id="generate-heading">2. Generate &mdash; Draft (template-based, not AI)</h2>
     <p class="note">This draft is built from the fields above using a fixed template. It is <strong>not</strong> AI-written. Review and edit everything below before you use it anywhere. This app does <strong>not</strong> publish to Vinted, Facebook, or anywhere else.</p>
     <label for="description">Product description (edit as needed)</label>
@@ -127,7 +143,7 @@
     <p id="saveMsg" class="muted" role="status"></p>
   </section>
 
-  <section aria-labelledby="track-heading">
+  <section id="track" aria-labelledby="track-heading">
     <h2 id="track-heading">3. Track &mdash; Inventory</h2>
     <p class="muted">Saved on this device only, in this browser. Clearing this browser's site data will clear this list.</p>
     <div id="inventory"></div>
@@ -239,13 +255,15 @@ function render() {
     var div = document.createElement("div");
     div.className = "item" + (it.isExample ? " example" : "");
     var html = "";
-    if (it.isExample) html += '<span class="example-badge">EXAMPLE ITEM &mdash; PLEASE DELETE &mdash; NOT REAL STOCK</span>';
-    if (it.photo) html += '<img src="' + it.photo.replace(/"/g, "") + '" alt="Item photo">';
+    if (it.isExample) html += '<span class="example-badge">Sample &mdash; please delete</span>';
+    if (it.photo) html += '<div class="photo-wrap"><img src="' + it.photo.replace(/"/g, "") + '" alt="Item photo"><span class="price-tag">Asking price: ' + money(it.price || 0) + '</span></div>';
+    else html += '<span class="price-tag price-tag-nophoto">Asking price: ' + money(it.price || 0) + '</span>';
     html += "<h3>" + escapeHtml((it.brand || "Unbranded") + " " + (it.type || "item")) + "</h3>";
     if (it.lens) html += "<p>Lens check: " + escapeHtml(it.lens) + "</p>";
     html += "<p>Size: " + escapeHtml(it.size || "Not listed") + " &middot; Condition: " + escapeHtml(it.condition) +
-      " &middot; Status: " + escapeHtml(it.status) + "<br>Cost: " + money(it.cost || 0) +
-      " &middot; Asking price: " + money(it.price || 0) + "<br>Date added: " + fmtDate(it.dateAdded) + "</p>";
+      " &middot; Status: " + '<span class="status-pill status-' + (it.status === "Sold" ? "sold" : "available") + '">' + escapeHtml(it.status) + "</span>" +
+      "<br>Cost: " + money(it.cost || 0) +
+      "<br>Date added: " + fmtDate(it.dateAdded) + "</p>";
     div.innerHTML = html;
     var soldBtn = document.createElement("button");
     soldBtn.type = "button"; soldBtn.className = "small";
@@ -391,6 +409,16 @@ document.getElementById("clearExampleBtn").addEventListener("click", function ()
   save((load() || []).filter(function (x) { return x.id !== exampleId; }));
   render();
 });
+var navLinks = document.querySelectorAll(".step-nav a");
+var navSections = ["review", "capture", "generate", "track"].map(function (id) { return document.getElementById(id); });
+function markNav() {
+  var pos = window.scrollY + 90;
+  var current = "review";
+  navSections.forEach(function (s) { if (s && s.offsetTop <= pos) current = s.id; });
+  navLinks.forEach(function (a) { a.classList.toggle("active", a.getAttribute("href") === "#" + current); });
+}
+window.addEventListener("scroll", markNav, { passive: true });
+markNav();
 render();
 </script>
 <script>
